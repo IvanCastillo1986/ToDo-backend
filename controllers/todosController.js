@@ -17,13 +17,16 @@ todos.get("/", async (req, res) => {
 // Show
 todos.get("/:id", async (req, res) => {
     const { id } = req.params;
-    console.log(id)
 
     try {
         const todo = await getTodo(id);
         res.status(200).json(todo);
     } catch(err) {
-        res.status(500).json({ error: err });
+        if (err.result?.rowCount === 0) {
+            res.status(404).json({ error: `Todo with id of ${id} not found`});
+        } else {
+            res.status(500).json({ error: err });
+        }
     }
 });
 
@@ -46,7 +49,11 @@ todos.put("/:id", async (req, res) => {
         const updatedTodo = await updateTodo(id, todo);
         res.status(200).json(updatedTodo);
     } catch(err) {
-        res.status(500).json({ error: err });
+        if (err.result?.rowCount === 0) {
+            res.status(404).json({ error: `Todo with id of ${id} not found`});
+        } else {
+            res.status(500).json({ error: err });
+        }
     }
 });
 
@@ -56,13 +63,13 @@ todos.delete("/:id", async (req, res) => {
     
     try {
         const deletedTodo = await deleteTodo(id);
-        if (deletedTodo.id) {
-            res.status(200).json(deletedTodo);
-        } else {
-            res.status(404).json({ error: "Todo not found"});
-        }
+        res.status(200).json(deletedTodo);
     } catch(err) {
-        res.status(500).json({ error: err });
+        if (err.result?.rowCount === 0) {
+            res.status(404).json({ error: `Todo with id of ${id} not found`});
+        } else {
+            res.status(500).json({ error: err });
+        }
     }
 });
 

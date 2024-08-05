@@ -2,7 +2,7 @@
 
 
 INSERT INTO todos (
-    todo_message, completed
+    todo_message, complete
 ) VALUES 
 ('begin the back-end', true),
 ('complete the get route', false),
